@@ -1,3 +1,4 @@
+package GormottEngine;
 import org.joml.Matrix4f;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
@@ -30,6 +31,8 @@ public class GlEngine {
 	private String wTitle;
 	private String iconUrl;
 
+	public Scene scene;
+
 	private final int floatSize = 4;
 
 	public GlEngine(int wWidth, int wHeight, String wTitle, String iconUrl){
@@ -37,6 +40,7 @@ public class GlEngine {
 		this.wHeight = wHeight;
 		this.wTitle = wTitle;
 		this.iconUrl = iconUrl;
+		this.scene = new Scene();
 	}
 
 	public void run() {
@@ -133,8 +137,11 @@ public class GlEngine {
 		return new Mesh(vertices, indices, 6);
 	}
 
-	private void debug(){
+	private void GlDebug(Callback c){
 		int errorId;
+
+		c.execCallback();
+
 		while((errorId = glGetError()) != GL_NO_ERROR){
 			System.out.println("Error code : "+errorId);
 		}
@@ -152,18 +159,17 @@ public class GlEngine {
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 		// glFrontFace(GL_CW);
-		Scene scene = new Scene();
 		// Mesh rect = newRect(16, 9);
 		// scene.addObj(rect);
 		Mesh rect = new Mesh("src\\models\\octahedron.obj");
 		scene.addObj(rect.scale(.5f).translate(-1.0f, 1.0f, 0.0f));
-
+		
 		Mesh suzanne = new Mesh("src\\models\\suzanne.obj");
 		scene.addObj(suzanne.scale(0.5f));
-
+		
 		for (int i = 0; i < 1; i++) {
 			Mesh cat = new Mesh("src\\models\\cat.obj");
-			scene.addObj(cat.scale(0.02f).translate(30.02f, 0.02f, 3.0f));
+			scene.addObj(cat.scale(0.02f).translate(30.02f, 0.02f-(i/10), 3.0f));
 		}
 
 		//color
@@ -177,7 +183,7 @@ public class GlEngine {
 			@Override
 			public void invoke(long window, int width, int height){
 				glViewport(0, 0, width, height);
-				render(scene);
+				render();
 			}
 		});
 		
@@ -186,16 +192,16 @@ public class GlEngine {
 		// the window or has pressed the ESCAPE key.
 		while ( !glfwWindowShouldClose(window) ) {
             // Set the clear color
-		    render(scene);
+		    render();
 		}
 	}
 
-	private void render(Scene scene){
+	private void render(){
         // Set the clear color
 		glClearColor(0.1f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-		scene.render();
+		this.scene.render();
 
 		glfwSwapBuffers(window); // swap the color buffers
 

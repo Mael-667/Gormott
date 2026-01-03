@@ -1,3 +1,4 @@
+package GormottEngine;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowIcon;
 import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
 import static org.lwjgl.opengl.GL20.glAttachShader;
@@ -84,14 +85,10 @@ public class Utils {
         glDeleteShader(shaderId);
 	}
 
-	public interface Callback {
-		void toTime();
-	}
-
 	public static void time(String funName, Callback c){
 		long mtn = System.nanoTime();
 		
-		c.toTime();
+		c.execCallback();
 
 		long fini = System.nanoTime();
 		System.out.println("temps dexecution de "+funName+" "+ ((fini - mtn)/1000)+" micro secondes");
