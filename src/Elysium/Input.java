@@ -1,4 +1,4 @@
-package GormottEngine;
+package Elysium;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Input {

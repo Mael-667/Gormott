@@ -1,4 +1,4 @@
-package GormottEngine;
+package Elysium;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowIcon;
 import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
 import static org.lwjgl.opengl.GL20.glAttachShader;
@@ -93,4 +93,8 @@ public class Utils {
 		long fini = System.nanoTime();
 		System.out.println("temps dexecution de "+funName+" "+ ((fini - mtn)/1000)+" micro secondes");
 	}
+
+	public static float pixelToNDC(int target, int maxlength){
+        return (2.0f*target/maxlength)-1;
+    }
 }

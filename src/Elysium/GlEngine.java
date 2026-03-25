@@ -1,27 +1,16 @@
-package GormottEngine;
-import org.joml.Matrix4f;
+package Elysium;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.*;
-
-import javax.imageio.ImageIO;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
-
-import static org.lwjgl.opengl.GL30.*;
 
 public class GlEngine {
 	
@@ -32,8 +21,6 @@ public class GlEngine {
 	private String iconUrl;
 
 	public Scene scene;
-
-	private final int floatSize = 4;
 
 	public GlEngine(int wWidth, int wHeight, String wTitle, String iconUrl){
 		this.wWidth = wWidth;
@@ -114,29 +101,6 @@ public class GlEngine {
 		glfwShowWindow(window);
 	}
 
-	private Mesh newRect(int l, int h){
-		float max = 2f;
-		int ratio = l > h ? l : h;
-		float trh = h*max/ratio/2;
-		float trl = l*max/ratio/2;
-
-		float[] vertices = {
-			//Un vertex représente un point qui contient plusieurs parametres tels que sa position ou sa couleur
-			//positions              //colors
-			trl,  trh, 0.0f,       1.0f, 0.0f, 0.0f,  // top right
-			trl, -trh, 0.0f,       0.0f, 1.0f, 0.0f,  // bottom right
-			-trl, -trh, 0.0f,      0.0f, 0.0f, 1.0f,  // bottom left
-			-trl,  trh, 0.0f,      1.0f, 1.0f, 1.0f  // top left 
-		};
-
-		int[] indices = {  // note that we start from 0!
-			3,1,0,   // first triangle
-			3,2,1    // second triangle
-		};  
-
-		return new Mesh(vertices, indices, 6);
-	}
-
 	private void GlDebug(Callback c){
 		int errorId;
 
@@ -154,23 +118,23 @@ public class GlEngine {
 		// creates the GLCapabilities instance and makes the OpenGL
 		// bindings available for use.
 		GL.createCapabilities();
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);  
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
+		// glEnable(GL_DEPTH_TEST);
+		// glDepthFunc(GL_LESS);  
+		// glEnable(GL_CULL_FACE);
+		// glCullFace(GL_BACK);
 		// glFrontFace(GL_CW);
 		// Mesh rect = newRect(16, 9);
 		// scene.addObj(rect);
-		Mesh rect = new Mesh("src\\models\\octahedron.obj");
-		scene.addObj(rect.scale(.5f).translate(-1.0f, 1.0f, 0.0f));
+		// Mesh rect = new Mesh("src\\models\\octahedron.obj");
+		// scene.addObj(rect.scale(.5f).translate(-1.0f, 1.0f, 0.0f));
 		
-		Mesh suzanne = new Mesh("src\\models\\suzanne.obj");
-		scene.addObj(suzanne.scale(0.5f));
+		// Mesh suzanne = new Mesh("src\\models\\suzanne.obj");
+		// scene.addObj(suzanne.scale(0.5f));
 		
-		for (int i = 0; i < 1; i++) {
-			Mesh cat = new Mesh("src\\models\\cat.obj");
-			scene.addObj(cat.scale(0.02f).translate(30.02f, 0.02f-(i/10), 3.0f));
-		}
+		// for (int i = 0; i < 1; i++) {
+		// 	Mesh cat = new Mesh("src\\models\\cat.obj");
+		// 	scene.addObj(cat.scale(0.02f).translate(30.02f, 0.02f-(i/10), 3.0f));
+		// }
 
 		//color
         // glVertexAttribPointer(1, 3, GL_FLOAT, false, 6 * floatSize, 3 * floatSize);
@@ -179,20 +143,37 @@ public class GlEngine {
 
 		//crée un callback qui va s'executer a chaque fois qu'on resize la fenetre
 		//lors du resize on re-render la scene
+		UiRenderer a = new UiRenderer(wWidth, wHeight);
 		glfwSetWindowSizeCallback(window, new GLFWWindowSizeCallback(){
 			@Override
 			public void invoke(long window, int width, int height){
 				glViewport(0, 0, width, height);
+				a.updateAllNDC(width, height);
 				render();
 			}
 		});
 		
+		Element cooldiv = new Element(0, 0, 450, 377);
+		cooldiv.setColor("#090080");
+		a.addElement(cooldiv);
+		a.addElement(new Element(737, 377, 50, 77));
+
+		a.addElement(new Element(237, 477, 150, 77));
+
 		
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
 		while ( !glfwWindowShouldClose(window) ) {
             // Set the clear color
-		    render();
+		    // render();
+			glClearColor(0.1f, 0.0f, 0.0f, 0.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+			a.draw();
+			glfwSwapBuffers(window); // swap the color buffers
+
+		// Poll for window events. The key callback above will only be
+		// invoked during this call.
+		glfwPollEvents();
 		}
 	}
 

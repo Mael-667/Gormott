@@ -1,4 +1,4 @@
-package GormottEngine;
+package Elysium;
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
@@ -95,9 +95,9 @@ public class Mesh{
 		//positions
         //VertexAttribPointer définit le layout des vertex
         glVertexAttribPointer(0, 3, GL_FLOAT, false, stride * Utils.floatSize, 0);
-        glEnableVertexAttribArray(0);  
         
         //Bind tous les parametres avant d'unbind le vao
+        glEnableVertexAttribArray(0);  
         glBindVertexArray(0);
 
     }
